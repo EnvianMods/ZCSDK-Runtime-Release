@@ -26,6 +26,7 @@ empty `enabled.txt` inside each of the two folders. Logs: `ue4ss/ZCSDKBridge.log
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.9 | 0.5.2 | 1.5.0 | the bridge's symbol cache (`ue4ss/ZCSDKBridge.symcache`): startup with many SDK mods drops from minutes to seconds |
 | 0.8 | 0.5.1 | 1.5.0 | `recruitPins[].match` — pins follow a recruit by a slot + part (recruited characters carry no definition); Class-slot pins |
 | 0.7 | 0.5.1 | 1.4.0 | `recruitPins` — keeps a pre-authored recruit's specialization / weapon slots pinned across the game's re-rolls |
 | 0.6 | 0.5.1 | 1.3.1 | DataRegistry refresh + pre-authored character-pool re-read (`refreshers`), idempotent |
