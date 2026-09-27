@@ -17,7 +17,9 @@ A content mod built with the SDK tells you whether it needs the runtime (its man
 runtime enabled. It offers the install automatically when you add an SDK mod that needs it.
 
 **By hand:** install UE4SS 3.0.1 for the game (`SWZeroCompany/Binaries/Win64/`), unzip the release's `ZCSDKRuntime_v<x.y>.zip` into
-`SWZeroCompany/Binaries/Win64/ue4ss/Mods/` so you get `Mods/ZCSDKBridge/dlls/main.dll` and `Mods/ZCSDKLoader/Scripts/main.lua`, then create an
+`SWZeroCompany/Binaries/Win64/ue4ss/Mods/` so you get `Mods/ZCSDKBridge/dlls/main.dll` and `Mods/ZCSDKLoader/Scripts/main.lua` — and move the zip's
+`UE4SS_Signatures/` folder ONE level up, next to `Mods/` (`ue4ss/UE4SS_Signatures/*.lua`: UE4SS's stock pattern scans miss this game's functions
+since the 2026-09-09 update, build 196985; these files are generated from the game's own PDB for exactly that build) — then create an
 empty `enabled.txt` inside each of the two folders. Logs: `ue4ss/ZCSDKBridge.log` and `ue4ss/ZCSDKLoader.log` (look for `ZCSDKLoader ready`).
 
 ## Versions
@@ -26,6 +28,7 @@ empty `enabled.txt` inside each of the two folders. Logs: `ue4ss/ZCSDKBridge.log
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.10 | 0.5.3 | 1.6.0 | mods in the game's own `SWZeroCompany/Mods/<Mod>/` folder (the SDK's gfp layout) are discovered: the bridge's `scan` gains a depth-1 option, the loader scans `$gamemods` with it and leaves a gfp mod's registry to the game |
 | 0.9 | 0.5.2 | 1.5.0 | the bridge's symbol cache (`ue4ss/ZCSDKBridge.symcache`): startup with many SDK mods drops from minutes to seconds |
 | 0.8 | 0.5.1 | 1.5.0 | `recruitPins[].match` — pins follow a recruit by a slot + part (recruited characters carry no definition); Class-slot pins |
 | 0.7 | 0.5.1 | 1.4.0 | `recruitPins` — keeps a pre-authored recruit's specialization / weapon slots pinned across the game's re-rolls |
