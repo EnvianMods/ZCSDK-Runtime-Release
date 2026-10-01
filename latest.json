@@ -1,9 +1,9 @@
 {
-  "version": "0.12",
+  "version": "0.12.1",
   "bridge": "0.5.3",
-  "loader": "1.8.29",
-  "asset": "ZCSDKRuntime_v0.12.zip",
-  "url": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.12/ZCSDKRuntime_v0.12.zip",
-  "published": "2026-09-30T20:20:17Z",
+  "loader": "1.8.30",
+  "asset": "ZCSDKRuntime_v0.12.1.zip",
+  "url": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.12.1/ZCSDKRuntime_v0.12.1.zip",
+  "published": "2026-10-01T09:14:39Z",
   "source": "Zero Company Mod SDK — tools/ue4ss-bridge + tools/ue4ss-loader (tools/publish-runtime.py)"
 }
