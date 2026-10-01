@@ -11,15 +11,15 @@ It is two [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS) mods. Together they let 
 
 An SDK-built mod tells you on its own page whether it needs the runtime. Plain override mods do not.
 
-**Tested on:** Steam, game build **197649**, **UE4SS 3.0.1**.
+**Tested on:** Steam, game build **197649**, UE4SS 3.0.1 as packaged on Nexus, v1.1.0-rc3 ([UE4SS for Star Wars Zero Company](https://www.nexusmods.com/starwarszerocompany/mods/9)).
 
 ---
 
 ## Install
 
-### 1. UE4SS 3.0.1 (required, once)
+### 1. UE4SS (required, once, and FIRST)
 
-Download **UE4SS v3.0.1** from its official release page: <https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/v3.0.1>. The asset is `UE4SS_v3.0.1.zip`. Do not use the `zDEV` build.
+Install **"UE4SS for Star Wars Zero Company"** from Nexus: <https://www.nexusmods.com/starwarszerocompany/mods/9>. This is the UE4SS build Mod Command installs and the one the runtime is tested on (it reports `UE4SS - v3.0.1 Beta` in `UE4SS.log`). Mod Command users can skip this step: Mod Command installs it for you.
 
 Extract it into:
 
@@ -27,7 +27,13 @@ Extract it into:
 ...\Star Wars Zero Company\SWZeroCompany\Binaries\Win64\
 ```
 
-That puts `dwmapi.dll` and a `ue4ss\` folder next to `SWZeroCompany.exe`. Other UE4SS versions are not supported. A different version is the most common reason nothing loads.
+That puts `dwmapi.dll` and a `ue4ss\` folder next to `SWZeroCompany.exe`.
+
+**Order: UE4SS (Nexus mod 9) first, then the runtime (step 2).** The runtime adds three signature files mod 9 does not have (`ConsoleManager.lua`, `FName_ToString.lua`, `GUObjectHashTables.lua`) and never replaces mod 9's own four. Either one can be updated at any time afterwards, and reinstalling mod 9 no longer means reinstalling the runtime.
+
+**Coming from runtime 0.10, 0.11 or 0.12 installed by hand?** Those versions overwrote three of mod 9's files (`StaticConstructObject.lua`, `FName_Constructor.lua`, `ProcessLocalScriptFunction.lua`), which is why ZCUnlocked showed its "old UE4SS" popup. After extracting this runtime, reinstall mod 9 and let it replace all files. Mod Command does this for you when it (re)installs the runtime.
+
+*Alternative:* the stock **UE4SS v3.0.1** from <https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/v3.0.1> (`UE4SS_v3.0.1.zip`, not the `zDEV` build) is the same UE4SS version, but the runtime is not tested on it. Other UE4SS versions are not supported.
 
 ### 2a. With Zero Company Mod Command (recommended)
 
@@ -35,7 +41,7 @@ Go to Settings → **ZCSDK Runtime** → Install / Update. Mod Command installs 
 
 ### 2b. By hand: one extract
 
-Download **`ZCSDKRuntime_v0.12_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
+Download **`ZCSDKRuntime_v0.12.1_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
 
 Extract it into the **same `Win64` folder** as step 1:
 
@@ -51,13 +57,14 @@ SWZeroCompany\Binaries\Win64\
 ├─ dwmapi.dll                         (UE4SS)
 └─ ue4ss\
    ├─ UE4SS.dll, UE4SS-settings.ini   (UE4SS)
-   ├─ UE4SS_Signatures\               (this runtime: 6 .lua files for game build 197649)
-   │   ├─ ConsoleManager.lua
-   │   ├─ FName_Constructor.lua
-   │   ├─ FName_ToString.lua
-   │   ├─ GUObjectHashTables.lua
-   │   ├─ ProcessLocalScriptFunction.lua
-   │   └─ StaticConstructObject.lua
+   ├─ UE4SS_Signatures\               (7 .lua files: 4 from UE4SS mod 9 + 3 from this runtime)
+   │   ├─ ConsoleManager.lua              (this runtime)
+   │   ├─ FName_Constructor.lua           (UE4SS mod 9)
+   │   ├─ FName_ToString.lua              (this runtime)
+   │   ├─ GUObjectArray.lua               (UE4SS mod 9)
+   │   ├─ GUObjectHashTables.lua          (this runtime)
+   │   ├─ ProcessLocalScriptFunction.lua  (UE4SS mod 9)
+   │   └─ StaticConstructObject.lua       (UE4SS mod 9)
    └─ Mods\
       ├─ ZCSDKBridge\
       │   ├─ dlls\main.dll
@@ -69,18 +76,18 @@ SWZeroCompany\Binaries\Win64\
           └─ enabled.txt
 ```
 
-If Windows asks whether to replace files, answer **Yes**. The only files replaced are the runtime's own and the six signature files.
+If Windows asks whether to replace files, answer **Yes**. The only files replaced are the runtime's own: its two mod folders and its three signature files. None of mod 9's files is in this zip.
 
 **About `enabled.txt`.** UE4SS starts a mod folder only when it holds an `enabled.txt`, or when `ue4ss\Mods\mods.txt` has a `Name : 1` line for it. Both runtime folders ship an empty `enabled.txt`, so nothing else is needed. To switch one part off by hand, rename its `enabled.txt` (for example to `enabled.txt.off`). If your `mods.txt` has `ZCSDKBridge : 0` or `ZCSDKLoader : 0`, change it to `1` or delete that line.
 
-**About `UE4SS_Signatures\`.** UE4SS's own pattern scans can't find some of this game's functions, and every game update moves them. These six files are generated from the game's own PDB for build 197649. They belong **next to** `Mods\`, not inside it. If they are missing or out of date, UE4SS stops with `AOB scans could not be completed`, and then no Lua mod runs at all.
+**About `UE4SS_Signatures\`.** UE4SS's own pattern scans can't find some of this game's functions, and every game update moves them. The folder holds seven files: four come with UE4SS (mod 9) and three with this runtime, generated from the game's own PDB for build 197649. They belong **next to** `Mods\`, not inside it. If any are missing or out of date, UE4SS stops with `AOB scans could not be completed`, and then no Lua mod runs at all.
 
 **Game Pass / Microsoft Store.** This build is not tested there. The runtime is built and tested on the Steam edition only.
 
-### Updating from 0.11
+### Updating from 0.10, 0.11 or 0.12
 
-- **Mod Command:** Settings → ZCSDK Runtime → Update.
-- **By hand:** extract `ZCSDKRuntime_v0.12_manual.zip` into `Win64\` as above and replace everything.
+- **Mod Command:** Settings → ZCSDK Runtime → **Reinstall** (it installs the newest release; the button may not say Update, because the loader and bridge versions did not change). Mod Command removes the three signature files the old runtime placed and puts back the mod 9 copies it kept. If ZCUnlocked still reports an old UE4SS afterwards, reinstall UE4SS mod 9 as well.
+- **By hand:** extract `ZCSDKRuntime_v0.12.1_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
   - If you installed 0.11 by hand, check that it left no nested folder behind. `ue4ss\Mods\ZCSDKRuntime_v0.11\…` or `ue4ss\Mods\Mods\…` are leftovers; delete them.
   - Also delete any `ue4ss\Mods\UE4SS_Signatures\` folder. That was the wrong place in 0.10/0.11 by-hand installs.
   - Your content mods and their settings files are not touched.
@@ -97,7 +104,7 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 - `ue4ss\Mods\ZCSDKBridge\enabled.txt`
 - `ue4ss\Mods\ZCSDKLoader\Scripts\main.lua`
 - `ue4ss\Mods\ZCSDKLoader\enabled.txt`
-- `ue4ss\UE4SS_Signatures\StaticConstructObject.lua` (and the five others)
+- `ue4ss\UE4SS_Signatures\` with all seven files: `ConsoleManager.lua`, `FName_ToString.lua`, `GUObjectHashTables.lua` (this runtime) and `FName_Constructor.lua`, `GUObjectArray.lua`, `ProcessLocalScriptFunction.lua`, `StaticConstructObject.lua` (UE4SS mod 9)
 
 **The log.** Start the game, reach the main menu, then open `ue4ss\UE4SS.log`. `ue4ss\ZCSDKLoader.log` carries the same lines. Look for these, in this order:
 
@@ -105,8 +112,8 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 UE4SS - v3.0.1 Beta ...
 Starting C++ mod 'ZCSDKBridge'           (or: Mod 'ZCSDKBridge' has enabled.txt, starting mod.)
 Starting Lua mod 'ZCSDKLoader'
-[ZCSDKLoader] ZCSDKLoader v1.8.29 loaded (win64=...); waiting for the main-menu world
-[ZCSDKLoader] pump: running on the game thread (1.8.29; ...)
+[ZCSDKLoader] ZCSDKLoader v1.8.30 loaded (win64=...); waiting for the main-menu world
+[ZCSDKLoader] pump: running on the game thread (1.8.30; ...)
 [ZCSDKLoader] === ZCSDKLoader start ===
 [ZCSDKLoader] manifest: .../<YourMod>.zcsdk.lua  (<YourMod> v<x.y.z> ...)      (one line per SDK mod installed)
 [ZCSDKLoader] N manifest(s), M grant(s)
@@ -114,6 +121,8 @@ Starting Lua mod 'ZCSDKLoader'
 ```
 
 `ZCSDKLoader v1.8.x loaded` followed by `ZCSDKLoader ready` means the runtime works.
+
+**With ZCUnlocked installed**, `ue4ss\Mods\ZCUnlocked\dlls\ZCUnlocked.log` should say `ue4ss: detected=1.1.0-rc3 required=1.1.0-rc3 verdict=ok`. `verdict=old` (for example `detected=1.0-or-partial(3-of-4-scripts)`, with ZCUnlocked's "old UE4SS" popup) means mod 9's files were overwritten by an older runtime: reinstall mod 9.
 
 **The Armoury row fix (ROWFIX, 1.8.29).** In the hub, `ZCSDKLoader.log` says ONE of these once:
 
@@ -130,18 +139,31 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 
 | What you see | Likely cause | Fix |
 |---|---|---|
-| New weapons / armour / classes are missing, and the log has **no** `ZCSDKLoader` line | The runtime is in the wrong folder or nested one level too deep, e.g. `Win64\ue4ss\Mods\ZCSDKRuntime_v0.12\ue4ss\Mods\…`, `Win64\Mods\…`, or `SWZeroCompany\Mods\ZCSDKLoader`. | Extract `…_manual.zip` into `Binaries\Win64\` itself, so `Win64\ue4ss\Mods\ZCSDKLoader\Scripts\main.lua` exists. |
+| New weapons / armour / classes are missing, and the log has **no** `ZCSDKLoader` line | The runtime is in the wrong folder or nested one level too deep, e.g. `Win64\ue4ss\Mods\ZCSDKRuntime_v0.12.1\ue4ss\Mods\…`, `Win64\Mods\…`, or `SWZeroCompany\Mods\ZCSDKLoader`. | Extract `…_manual.zip` into `Binaries\Win64\` itself, so `Win64\ue4ss\Mods\ZCSDKLoader\Scripts\main.lua` exists. |
 | `ZCSDKLoader` is listed but never `loaded` | No `enabled.txt`, or `mods.txt` says `ZCSDKLoader : 0` | Add the empty `enabled.txt`, or set the line to `: 1`. |
 | `ZCSDKLoader ready` but `0 manifest(s)` | The content mod is not installed where its page says. SDK mods live in `SWZeroCompany\Mods\<Mod>\` or in `Content\Paks\~mods\` with their `.zcsdk.lua`. | Reinstall the content mod per its page. |
-| **No** UE4SS mod works (not just this one), or `AOB scans could not be completed` | `UE4SS_Signatures\` is missing, out of date, or sitting **inside** `Mods\`; or the UE4SS version is not 3.0.1 | Put the six files in `ue4ss\UE4SS_Signatures\`, install UE4SS 3.0.1, and re-download the runtime after a game update. |
+| **No** UE4SS mod works (not just this one), or `AOB scans could not be completed` | `UE4SS_Signatures\` is missing, out of date, or sitting **inside** `Mods\`; or the UE4SS version is not 3.0.1 | All seven files belong in `ue4ss\UE4SS_Signatures\` (not inside `Mods\`). Reinstall UE4SS mod 9, then the runtime. After a game update, wait for both to catch up. |
 | Another UE4SS mod broke after installing the runtime | Usually the signature folder in the wrong place, or a second UE4SS copy (for example an old `ue4ss\` inside `Win64\Mods\`) | As above. Keep exactly one UE4SS install in `Win64\`. |
-| Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armoury row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armoury closed | **Fixed in 1.8.29 (this release):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
+| ZCUnlocked says UE4SS is old (`ZCUnlocked.log`: `ue4ss: detected=… verdict=old`) | Runtime 0.10–0.12 overwrote three of mod 9's signature files with copies that carry no version marker | Install this runtime (0.12.1), then reinstall UE4SS mod 9 and replace all files. In Mod Command: Settings → ZCSDK Runtime → Reinstall. |
+| Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armoury row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armoury closed | **Fixed in 1.8.29 (since runtime 0.12):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
 | Blank rows in the Armoury weapon list with ZCUnlocked installed and 1.8.29 | ROWFIX stood down for ZCUnlocked (`ROWFIX skipped` in the log), but ZCUnlocked's healers did not fix those rows | Create `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX]` / `Enabled = on` to run both. `Enabled = off` switches the row fix off entirely. |
 | The game crashes at start after a game update | The signatures are for an older build | Wait for the runtime release for the new build, or use Mod Command. |
 
 Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any report.
 
 ---
+
+## Changes: 0.12 → 0.12.1
+
+| | 0.12 (2026-09-30) | 0.12.1 |
+|---|---|---|
+| ZCSDKBridge | 0.5.3 | 0.5.3 (unchanged) |
+| ZCSDKLoader | 1.8.29 | 1.8.30 (version number only, so Mod Command offers the update; no code change) |
+| Signature files | 6 | **3** |
+
+- The runtime ships only the three signature files UE4SS mod 9 lacks: `ConsoleManager.lua`, `FName_ToString.lua`, `GUObjectHashTables.lua`.
+- It no longer carries `StaticConstructObject.lua`, `FName_Constructor.lua` or `ProcessLocalScriptFunction.lua`. Mod 9 ships its own copies, which work on build 197649 and carry the version marker ZCUnlocked reads. Ours overwrote them, so ZCUnlocked showed its "old UE4SS" popup.
+- No gameplay change: same loader and bridge.
 
 ## Changes: 0.11 → 0.12
 
@@ -179,7 +201,7 @@ Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any repo
 - A new optional `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX] Enabled = auto | on | off`.
 
 **Signatures**
-- For game build 197649 (regenerated 2026-09-28).
+- For game build 197649 (regenerated 2026-09-28). Six files; 0.12.1 drops the three mod 9 owns.
 
 ## Versions
 
@@ -187,6 +209,7 @@ Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any repo
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.12.1 | 0.5.3 | 1.8.30 | three signature files only (mod 9 keeps its own four): ZCUnlocked's "old UE4SS" popup fixed |
 | 0.12 | 0.5.3 | 1.8.29 | by-hand zip with one `ue4ss\` folder; the ROWFIX hub stutter fixed; 1.8.27/1.8.28's frame budget and class-mod runtime |
 | 0.11 | 0.5.3 | 1.8.26 | one game-thread pump (no Lua on UE4SS's async thread: the Den crash fix) |
 | 0.10 | 0.5.3 | 1.6.0 | mods in the game's own `SWZeroCompany/Mods/<Mod>/` folder are discovered |
