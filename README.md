@@ -41,7 +41,7 @@ Go to Settings → **ZCSDK Runtime** → Install / Update. Mod Command installs 
 
 ### 2b. By hand: one extract
 
-Download **`ZCSDKRuntime_v0.12.1_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
+Download **`ZCSDKRuntime_v0.12.2_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
 
 Extract it into the **same `Win64` folder** as step 1:
 
@@ -87,7 +87,7 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 ### Updating from 0.10, 0.11 or 0.12
 
 - **Mod Command:** Settings → ZCSDK Runtime → **Reinstall** (it installs the newest release; the button may not say Update, because the loader and bridge versions did not change). Mod Command removes the three signature files the old runtime placed and puts back the mod 9 copies it kept. If ZCUnlocked still reports an old UE4SS afterwards, reinstall UE4SS mod 9 as well.
-- **By hand:** extract `ZCSDKRuntime_v0.12.1_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
+- **By hand:** extract `ZCSDKRuntime_v0.12.2_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
   - If you installed 0.11 by hand, check that it left no nested folder behind. `ue4ss\Mods\ZCSDKRuntime_v0.11\…` or `ue4ss\Mods\Mods\…` are leftovers; delete them.
   - Also delete any `ue4ss\Mods\UE4SS_Signatures\` folder. That was the wrong place in 0.10/0.11 by-hand installs.
   - Your content mods and their settings files are not touched.
@@ -112,8 +112,8 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 UE4SS - v3.0.1 Beta ...
 Starting C++ mod 'ZCSDKBridge'           (or: Mod 'ZCSDKBridge' has enabled.txt, starting mod.)
 Starting Lua mod 'ZCSDKLoader'
-[ZCSDKLoader] ZCSDKLoader v1.8.30 loaded (win64=...); waiting for the main-menu world
-[ZCSDKLoader] pump: running on the game thread (1.8.30; ...)
+[ZCSDKLoader] ZCSDKLoader v1.8.32 loaded (win64=...); waiting for the main-menu world
+[ZCSDKLoader] pump: running on the game thread (1.8.32; ...)
 [ZCSDKLoader] === ZCSDKLoader start ===
 [ZCSDKLoader] manifest: .../<YourMod>.zcsdk.lua  (<YourMod> v<x.y.z> ...)      (one line per SDK mod installed)
 [ZCSDKLoader] N manifest(s), M grant(s)
@@ -144,7 +144,7 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 | `ZCSDKLoader ready` but `0 manifest(s)` | The content mod is not installed where its page says. SDK mods live in `SWZeroCompany\Mods\<Mod>\` or in `Content\Paks\~mods\` with their `.zcsdk.lua`. | Reinstall the content mod per its page. |
 | **No** UE4SS mod works (not just this one), or `AOB scans could not be completed` | `UE4SS_Signatures\` is missing, out of date, or sitting **inside** `Mods\`; or the UE4SS version is not 3.0.1 | All seven files belong in `ue4ss\UE4SS_Signatures\` (not inside `Mods\`). Reinstall UE4SS mod 9, then the runtime. After a game update, wait for both to catch up. |
 | Another UE4SS mod broke after installing the runtime | Usually the signature folder in the wrong place, or a second UE4SS copy (for example an old `ue4ss\` inside `Win64\Mods\`) | As above. Keep exactly one UE4SS install in `Win64\`. |
-| ZCUnlocked says UE4SS is old (`ZCUnlocked.log`: `ue4ss: detected=… verdict=old`) | Runtime 0.10–0.12 overwrote three of mod 9's signature files with copies that carry no version marker | Install this runtime (0.12.1), then reinstall UE4SS mod 9 and replace all files. In Mod Command: Settings → ZCSDK Runtime → Reinstall. |
+| ZCUnlocked says UE4SS is old (`ZCUnlocked.log`: `ue4ss: detected=… verdict=old`) | Runtime 0.10–0.12 overwrote three of mod 9's signature files with copies that carry no version marker | Install this runtime (0.12.1 or newer), then reinstall UE4SS mod 9 and replace all files. In Mod Command: Settings → ZCSDK Runtime → Reinstall. |
 | Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armoury row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armoury closed | **Fixed in 1.8.29 (since runtime 0.12):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
 | Blank rows in the Armoury weapon list with ZCUnlocked installed and 1.8.29 | ROWFIX stood down for ZCUnlocked (`ROWFIX skipped` in the log), but ZCUnlocked's healers did not fix those rows | Create `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX]` / `Enabled = on` to run both. `Enabled = off` switches the row fix off entirely. |
 | The game crashes at start after a game update | The signatures are for an older build | Wait for the runtime release for the new build, or use Mod Command. |
@@ -152,6 +152,21 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any report.
 
 ---
+
+## Changes: 0.12.1 → 0.12.2
+
+| | 0.12.1 (2026-10-01) | 0.12.2 |
+|---|---|---|
+| ZCSDKBridge | 0.5.3 | 0.5.3 (unchanged) |
+| ZCSDKLoader | 1.8.30 | **1.8.32** |
+| Signature files | 3 | 3 (unchanged) |
+
+For class mods (recruit pins):
+- **Talents hold.** A recruit card's Talent is set only after the game has written the voice's talent (the loader waits until the Recruitment screen reports every card generated) and is re-checked at 8 / 30 / 60 / 120 s, re-pinned if the game overwrote it. Before, the game's voice-to-talent write could replace a mod's talent on the card.
+- **Stock recruits are never taken over.** Only parts from the mod's own folder identify a character as the mod's. Before, a stock recruit whose talent or weapon happened to match a mod's pin could be given the mod's class.
+- **No re-pin storm after a refresh.** The previous card set is retired on every Recruitment refresh, a write that changes nothing gives up after 3 tries, and the newest cards are pinned first (about 2-6 s after a refresh).
+- **Recruited characters keep the player's choices** where a mod allows them ("roster" accept-sets now apply to recruited characters, not only to non-cards).
+- **No console window at launch.** The loader no longer starts a hidden `cmd.exe` to find the game folder.
 
 ## Changes: 0.12 → 0.12.1
 
@@ -209,6 +224,7 @@ Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any repo
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.12.2 | 0.5.3 | 1.8.32 | recruit pins: talents hold, stock recruits never taken over, no re-pin storm, recruited characters keep allowed choices; no console window at launch |
 | 0.12.1 | 0.5.3 | 1.8.30 | three signature files only (mod 9 keeps its own four): ZCUnlocked's "old UE4SS" popup fixed |
 | 0.12 | 0.5.3 | 1.8.29 | by-hand zip with one `ue4ss\` folder; the ROWFIX hub stutter fixed; 1.8.27/1.8.28's frame budget and class-mod runtime |
 | 0.11 | 0.5.3 | 1.8.26 | one game-thread pump (no Lua on UE4SS's async thread: the Den crash fix) |
