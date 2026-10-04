@@ -68,6 +68,7 @@ SWZeroCompany\Binaries\Win64\
    └─ Mods\
       ├─ ZCSDKBridge\
       │   ├─ dlls\main.dll
+      │   ├─ symbols\symtable_….txt   (bridge 0.6.0+: the game's functions, one file per game build)
       │   ├─ modinfo.json
       │   └─ enabled.txt
       └─ ZCSDKLoader\
@@ -83,6 +84,28 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 **About `UE4SS_Signatures\`.** UE4SS's own pattern scans can't find some of this game's functions, and every game update moves them. The folder holds seven files: four come with UE4SS (mod 9) and three with this runtime, generated from the game's own PDB for build 197649. They belong **next to** `Mods\`, not inside it. If any are missing or out of date, UE4SS stops with `AOB scans could not be completed`, and then no Lua mod runs at all.
 
 **Game Pass / Microsoft Store.** This build is not tested there. The runtime is built and tested on the Steam edition only.
+
+### Linux / Steam Deck (Proton)
+
+Install exactly as above with the `_manual` zip (Mod Command is a Windows program). Two Proton-specific points:
+
+1. **UE4SS needs a launch option under Proton.** In Steam: Star Wars Zero Company → Properties → Launch Options:
+   `WINEDLLOVERRIDES="dwmapi=n,b" %command%`. Without it Proton loads its own `dwmapi.dll` instead of UE4SS's, and no UE4SS mod
+   (this runtime included) starts: there is then no `ue4ss\UE4SS.log` at all.
+2. **ZCSDKBridge 0.6.0 or newer.** Older bridges (0.5.x, up to runtime 0.12.2) looked the game's functions up with Windows'
+   `dbghelp`, which does not work under Proton (`UNRESOLVED … err=126` in `ue4ss\ZCSDKBridge.log`): SDK mods loaded, but none of
+   their new items was listed. 0.6.0 reads them from a table that ships in `ZCSDKBridge\symbols\` (one file per game build).
+
+`ue4ss\ZCSDKBridge.log` then says, near the top:
+
+```
+symbols: mode=auto exe stamp=… size=… pdb=… (Wine …)
+symbol table: symtable_….txt matches this exe (55 symbol(s))
+```
+
+and every `resolved … (table)` line after it. `symbol table: NONE matches this exe` means the game updated after this runtime
+was released: the bridge then reads the game's `SWZeroCompany.pdb` itself (`pdb reader: …` lines; a few seconds once, then
+cached), and a runtime release for the new build brings the table back.
 
 ### Updating from 0.10, 0.11 or 0.12
 
@@ -102,6 +125,7 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 - `ue4ss\UE4SS.dll`
 - `ue4ss\Mods\ZCSDKBridge\dlls\main.dll`
 - `ue4ss\Mods\ZCSDKBridge\enabled.txt`
+- `ue4ss\Mods\ZCSDKBridge\symbols\symtable_….txt` (bridge 0.6.0 or newer; required under Proton)
 - `ue4ss\Mods\ZCSDKLoader\Scripts\main.lua`
 - `ue4ss\Mods\ZCSDKLoader\enabled.txt`
 - `ue4ss\UE4SS_Signatures\` with all seven files: `ConsoleManager.lua`, `FName_ToString.lua`, `GUObjectHashTables.lua` (this runtime) and `FName_Constructor.lua`, `GUObjectArray.lua`, `ProcessLocalScriptFunction.lua`, `StaticConstructObject.lua` (UE4SS mod 9)
