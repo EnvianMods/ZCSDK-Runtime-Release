@@ -2,7 +2,7 @@
 
 The ZCSDK Runtime is the runtime half of the **Zero Company Mod SDK** by Envian Mods, for **STAR WARS: Zero Company** (Bit Reactor, Unreal Engine 5.6).
 
-It is two [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS) mods. Together they let content mods built with the SDK (new weapons, armour, classes, abilities) appear in the game's own menus, shops, reward tables and pickers, alongside the game's own content.
+It is two [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS) mods. Together they let content mods built with the SDK (new weapons, armor, classes, abilities) appear in the game's own menus, shops, reward tables and pickers, alongside the game's own content.
 
 | Folder | What it is |
 |---|---|
@@ -148,7 +148,7 @@ Starting Lua mod 'ZCSDKLoader'
 
 **With ZCUnlocked installed**, `ue4ss\Mods\ZCUnlocked\dlls\ZCUnlocked.log` should say `ue4ss: detected=1.1.0-rc3 required=1.1.0-rc3 verdict=ok`. `verdict=old` (for example `detected=1.0-or-partial(3-of-4-scripts)`, with ZCUnlocked's "old UE4SS" popup) means mod 9's files were overwritten by an older runtime: reinstall mod 9.
 
-**The Armoury row fix (ROWFIX, 1.8.29).** In the hub, `ZCSDKLoader.log` says ONE of these once:
+**The Armory row fix (ROWFIX, 1.8.29).** In the hub, `ZCSDKLoader.log` says ONE of these once:
 
 ```
 ROWFIX skipped: ZCUnlocked is installed and enabled (ue4ss/Mods/ZCUnlocked via mods.txt) and heals the Armoury rows itself (...)
@@ -163,14 +163,14 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 
 | What you see | Likely cause | Fix |
 |---|---|---|
-| New weapons / armour / classes are missing, and the log has **no** `ZCSDKLoader` line | The runtime is in the wrong folder or nested one level too deep, e.g. `Win64\ue4ss\Mods\ZCSDKRuntime_v0.12.1\ue4ss\Mods\…`, `Win64\Mods\…`, or `SWZeroCompany\Mods\ZCSDKLoader`. | Extract `…_manual.zip` into `Binaries\Win64\` itself, so `Win64\ue4ss\Mods\ZCSDKLoader\Scripts\main.lua` exists. |
+| New weapons / armor / classes are missing, and the log has **no** `ZCSDKLoader` line | The runtime is in the wrong folder or nested one level too deep, e.g. `Win64\ue4ss\Mods\ZCSDKRuntime_v0.12.1\ue4ss\Mods\…`, `Win64\Mods\…`, or `SWZeroCompany\Mods\ZCSDKLoader`. | Extract `…_manual.zip` into `Binaries\Win64\` itself, so `Win64\ue4ss\Mods\ZCSDKLoader\Scripts\main.lua` exists. |
 | `ZCSDKLoader` is listed but never `loaded` | No `enabled.txt`, or `mods.txt` says `ZCSDKLoader : 0` | Add the empty `enabled.txt`, or set the line to `: 1`. |
 | `ZCSDKLoader ready` but `0 manifest(s)` | The content mod is not installed where its page says. SDK mods live in `SWZeroCompany\Mods\<Mod>\` or in `Content\Paks\~mods\` with their `.zcsdk.lua`. | Reinstall the content mod per its page. |
 | **No** UE4SS mod works (not just this one), or `AOB scans could not be completed` | `UE4SS_Signatures\` is missing, out of date, or sitting **inside** `Mods\`; or the UE4SS version is not 3.0.1 | All seven files belong in `ue4ss\UE4SS_Signatures\` (not inside `Mods\`). Reinstall UE4SS mod 9, then the runtime. After a game update, wait for both to catch up. |
 | Another UE4SS mod broke after installing the runtime | Usually the signature folder in the wrong place, or a second UE4SS copy (for example an old `ue4ss\` inside `Win64\Mods\`) | As above. Keep exactly one UE4SS install in `Win64\`. |
 | ZCUnlocked says UE4SS is old (`ZCUnlocked.log`: `ue4ss: detected=… verdict=old`) | Runtime 0.10–0.12 overwrote three of mod 9's signature files with copies that carry no version marker | Install this runtime (0.12.1 or newer), then reinstall UE4SS mod 9 and replace all files. In Mod Command: Settings → ZCSDK Runtime → Reinstall. |
-| Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armoury row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armoury closed | **Fixed in 1.8.29 (since runtime 0.12):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
-| Blank rows in the Armoury weapon list with ZCUnlocked installed and 1.8.29 | ROWFIX stood down for ZCUnlocked (`ROWFIX skipped` in the log), but ZCUnlocked's healers did not fix those rows | Create `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX]` / `Enabled = on` to run both. `Enabled = off` switches the row fix off entirely. |
+| Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armory row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armory closed | **Fixed in 1.8.29 (since runtime 0.12):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
+| Blank rows in the Armory weapon list with ZCUnlocked installed and 1.8.29 | ROWFIX stood down for ZCUnlocked (`ROWFIX skipped` in the log), but ZCUnlocked's healers did not fix those rows | Create `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX]` / `Enabled = on` to run both. `Enabled = off` switches the row fix off entirely. |
 | The game crashes at start after a game update | The signatures are for an older build | Wait for the runtime release for the new build, or use Mod Command. |
 
 Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any report.
@@ -232,9 +232,9 @@ For class mods (recruit pins):
 - A hook-driven urgent pass, so a recruit is pinned within about 3–5 s.
 
 **Loader 1.8.29**
-- The ~5 s hub stutter from the Armoury row fix is gone:
+- The ~5 s hub stutter from the Armory row fix is gone:
   - it makes one lookup per pass instead of a class lookup on every pass;
-  - it backs off when there is nothing to heal: 5 → 30 s while the Armoury weapon page is closed, 2 → 8 s on the page after 3 clean passes (a stuck row brings back 1 s passes);
+  - it backs off when there is nothing to heal: 5 → 30 s while the Armory weapon page is closed, 2 → 8 s on the page after 3 clean passes (a stuck row brings back 1 s passes);
   - closing the page or leaving the hub disarms it;
   - it stands down for the session, with one log line, while ZCUnlocked's row healers (`vm-blank` / `listfix`) are on.
 - A new optional `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX] Enabled = auto | on | off`.
