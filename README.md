@@ -11,7 +11,7 @@ It is two [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS) mods. Together they let 
 
 An SDK-built mod tells you on its own page whether it needs the runtime. Plain override mods do not.
 
-**Tested on:** Steam, game build **197649**, UE4SS 3.0.1 as packaged on Nexus, v1.1.0-rc3 ([UE4SS for Star Wars Zero Company](https://www.nexusmods.com/starwarszerocompany/mods/9)).
+**Tested on:** Steam, game build **201250** (the 2026-11-10 update), UE4SS 3.0.1 as packaged on Nexus, v1.1.0-rc3 ([UE4SS for Star Wars Zero Company](https://www.nexusmods.com/starwarszerocompany/mods/9)).
 
 ---
 
@@ -41,7 +41,7 @@ Go to Settings → **ZCSDK Runtime** → Install / Update. Mod Command installs 
 
 ### 2b. By hand: one extract
 
-Download **`ZCSDKRuntime_v0.12.2_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
+Download **`ZCSDKRuntime_v0.15.2_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
 
 Extract it into the **same `Win64` folder** as step 1:
 
@@ -81,7 +81,7 @@ If Windows asks whether to replace files, answer **Yes**. The only files replace
 
 **About `enabled.txt`.** UE4SS starts a mod folder only when it holds an `enabled.txt`, or when `ue4ss\Mods\mods.txt` has a `Name : 1` line for it. Both runtime folders ship an empty `enabled.txt`, so nothing else is needed. To switch one part off by hand, rename its `enabled.txt` (for example to `enabled.txt.off`). If your `mods.txt` has `ZCSDKBridge : 0` or `ZCSDKLoader : 0`, change it to `1` or delete that line.
 
-**About `UE4SS_Signatures\`.** UE4SS's own pattern scans can't find some of this game's functions, and every game update moves them. The folder holds seven files: four come with UE4SS (mod 9) and three with this runtime, generated from the game's own PDB for build 197649. They belong **next to** `Mods\`, not inside it. If any are missing or out of date, UE4SS stops with `AOB scans could not be completed`, and then no Lua mod runs at all.
+**About `UE4SS_Signatures\`.** UE4SS's own pattern scans can't find some of this game's functions, and every game update moves them. The folder holds seven files: four come with UE4SS (mod 9) and three with this runtime, generated from the game's own PDB for build 201250. They belong **next to** `Mods\`, not inside it. If any are missing or out of date, UE4SS stops with `AOB scans could not be completed`, and then no Lua mod runs at all.
 
 **Game Pass / Microsoft Store.** This build is not tested there. The runtime is built and tested on the Steam edition only.
 
@@ -100,17 +100,22 @@ Install exactly as above with the `_manual` zip (Mod Command is a Windows progra
 
 ```
 symbols: mode=auto exe stamp=… size=… pdb=… (Wine …)
-symbol table: symtable_….txt matches this exe (55 symbol(s))
+symbol table: symtable_….txt matches this exe (63 symbol(s))
 ```
 
 and every `resolved … (table)` line after it. `symbol table: NONE matches this exe` means the game updated after this runtime
 was released: the bridge then reads the game's `SWZeroCompany.pdb` itself (`pdb reader: …` lines; a few seconds once, then
 cached), and a runtime release for the new build brings the table back.
 
-### Updating from 0.10, 0.11 or 0.12
+### Updating from an older runtime
+
+After a game update, every older runtime's signature files stop matching and no Lua mod starts. Update to the newest runtime (Mod Command: Settings → ZCSDK Runtime → Update; by hand: extract `ZCSDKRuntime_v0.15.2_manual.zip` into `Win64\` and replace everything).
+
+**Coming from 0.10, 0.11 or 0.12** (extra steps):
+
 
 - **Mod Command:** Settings → ZCSDK Runtime → **Reinstall** (it installs the newest release; the button may not say Update, because the loader and bridge versions did not change). Mod Command removes the three signature files the old runtime placed and puts back the mod 9 copies it kept. If ZCUnlocked still reports an old UE4SS afterwards, reinstall UE4SS mod 9 as well.
-- **By hand:** extract `ZCSDKRuntime_v0.12.2_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
+- **By hand:** extract `ZCSDKRuntime_v0.15.2_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
   - If you installed 0.11 by hand, check that it left no nested folder behind. `ue4ss\Mods\ZCSDKRuntime_v0.11\…` or `ue4ss\Mods\Mods\…` are leftovers; delete them.
   - Also delete any `ue4ss\Mods\UE4SS_Signatures\` folder. That was the wrong place in 0.10/0.11 by-hand installs.
   - Your content mods and their settings files are not touched.
@@ -136,8 +141,8 @@ cached), and a runtime release for the new build brings the table back.
 UE4SS - v3.0.1 Beta ...
 Starting C++ mod 'ZCSDKBridge'           (or: Mod 'ZCSDKBridge' has enabled.txt, starting mod.)
 Starting Lua mod 'ZCSDKLoader'
-[ZCSDKLoader] ZCSDKLoader v1.8.32 loaded (win64=...); waiting for the main-menu world
-[ZCSDKLoader] pump: running on the game thread (1.8.32; ...)
+[ZCSDKLoader] ZCSDKLoader v1.8.56 loaded (win64=...); waiting for the main-menu world
+[ZCSDKLoader] pump: running on the game thread (1.8.56; ...)
 [ZCSDKLoader] === ZCSDKLoader start ===
 [ZCSDKLoader] manifest: .../<YourMod>.zcsdk.lua  (<YourMod> v<x.y.z> ...)      (one line per SDK mod installed)
 [ZCSDKLoader] N manifest(s), M grant(s)
@@ -172,10 +177,62 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 | Short hitch every ~5 s in the hub (log: `pump: task rowfix took 60-90 ms in one frame`) | Loader 1.8.24–1.8.28's Armory row fix (ROWFIX) walked the game's whole object list on every pass, even with the Armory closed | **Fixed in 1.8.29 (since runtime 0.12):** no class lookup, one lookup per pass with back-off, and it stands down entirely while ZCUnlocked's own row healers (`vm-blank` / `listfix`) are on. The log says `ROWFIX skipped: ZCUnlocked is installed and enabled …` once. |
 | Blank rows in the Armory weapon list with ZCUnlocked installed and 1.8.29 | ROWFIX stood down for ZCUnlocked (`ROWFIX skipped` in the log), but ZCUnlocked's healers did not fix those rows | Create `ue4ss\Mods\ZCSDKLoader\settings.ini` with `[ROWFIX]` / `Enabled = on` to run both. `Enabled = off` switches the row fix off entirely. |
 | The game crashes at start after a game update | The signatures are for an older build | Wait for the runtime release for the new build, or use Mod Command. |
+| SDK mods are missing while ZC Unlocked is installed, and `ZCUnlocked.log` says it refused this game build | ZC Unlocked turns itself off on a game build it doesn't know yet | Runtime 0.15 (loader 1.8.53) lists the SDK mods itself in that case. Update the runtime; ZC Unlocked's own features come back when its author updates it. |
 
 Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any report.
 
 ---
+
+## Changes: 0.15.1 → 0.15.2
+
+| | 0.15.1 (2026-11-12) | 0.15.2 |
+|---|---|---|
+| ZCSDKBridge | 0.7.3 | 0.7.3 (same DLL, SHA-256 `dcd2171a…`) |
+| ZCSDKLoader | 1.8.54 | **1.8.56** |
+
+- **SDK mods no longer depend on ZC Unlocked to show their items.** When a mod shipped a ZC Unlocked menu pack, the runtime used to leave that mod's listing to ZC Unlocked. ZC Unlocked can't add a new weapon class, so with ZC Unlocked 1.4.77 the blaster pack's Z-6 Rotary Cannon lost its own class and showed only as a DC-15LE model. The runtime now lists every mod itself; with ZC Unlocked on, the blasters also show in their own classes next to its model tiles. ZC Unlocked's extras (Bolt Color, Twin pistols, model tiles) stay as they were.
+- **Pack options.** Mods can offer settings (switches and choices) that you change in their `settings.ini`, or in ZC Unlocked's menu when the mod mirrors one. `[ZCSDK] enabled = 0` in a mod's `settings.ini` hides that mod's items without uninstalling it.
+
+## Changes: 0.15 → 0.15.1
+
+| | 0.15 (2026-11-11) | 0.15.1 (2026-11-12) |
+|---|---|---|
+| ZCSDKBridge | 0.7.2 | **0.7.3** |
+| ZCSDKLoader | 1.8.53 | **1.8.54** |
+
+A security update. SDK mods work the same, on the same game build (201250) and the same signature files.
+
+- **Mod manifests are read as data, never run.** The loader used to run each `<Mod>.zcsdk.lua` as Lua. It now reads only the values in a plain `return { ... }` table. A file with anything else in it is skipped, and `ZCSDKLoader.log` names the mod ("manifest not supported"). One broken mod no longer stops the mods after it.
+- **The bridge takes only the loader's commands,** only from the current game session, and calls only the game functions the loader needs. Its debug commands are left out of the release build.
+- **A reproducible DLL.** Two builds of the bridge came out byte for byte the same; its SHA-256 is `dcd2171ae195cd76f72e08a5756d73bf9c65f2e5d7a8e723cad453bded2dee1b`. Each release lists the SHA-256 of both zips, and `latest.json` carries them too.
+- **A fresh log every launch.** `ZCSDKLoader.log` starts new each time; the previous one is kept as `ZCSDKLoader.prev.log`.
+
+## Changes: 0.14.1 → 0.15
+
+| | 0.14.1 (2026-10-17) | 0.15 (2026-11-11) |
+|---|---|---|
+| ZCSDKBridge | 0.6.0 | **0.7.2** |
+| ZCSDKLoader | 1.8.34 | **1.8.53** |
+| Signature files | 3 (build 199049) | 3 (**build 201250**) |
+| Symbol tables | 197649, 199049 | 197649, 199049, **201250** |
+
+- **Fixes mods not loading after the 2026-11-10 game update (build 201250).** The patch broke two of UE4SS's signature scans (ConsoleManager and GUObjectHashTables), so UE4SS started no Lua mods at all. This runtime ships those two files rebuilt for 201250, plus FName_ToString. Mod 9's four files are still not included.
+- **SDK mods no longer wait on ZC Unlocked.** If ZC Unlocked is installed but has turned itself off for an unknown game build, the loader lists the SDK mods itself and runs the Armory row fix.
+- **New gameplay tags from SDK mods are registered** when the game loads (bridge 0.7.1+), so mod abilities and items that check them behave as built.
+- **Status effect visuals added by mods** show in missions (bridge 0.7.2 adds mod rows to the live status-effect table).
+- Loader 1.8.35 to 1.8.53: saber customization (blade colors, fixed crystal slot counts, Dual and Staff layouts), setting-gated item grants spread over several frames, class auras and beams, the ability wheel for classes with more than four buttons, AI use of mod abilities, and many smaller fixes.
+
+## Changes: 0.14 → 0.14.1
+
+- v0.14 shipped an old ZCSDKBridge build by mistake, so the Proton / Steam Deck path could not resolve the game's functions. v0.14.1 ships the real bridge 0.6.0.
+
+## Changes: 0.13 → 0.14
+
+- Game update 199049 (2026-10-15): the three signature files rebuilt for 199049; symbol tables for 197649 and 199049; loader 1.8.34 (class auras pulse each turn).
+
+## Changes: 0.12.2 → 0.13
+
+- Linux / Steam Deck (Proton) support: ZCSDKBridge 0.6.0 reads the game's functions from a shipped symbol table (or its own PDB reader) instead of Windows' `dbghelp`.
 
 ## Changes: 0.12.1 → 0.12.2
 
@@ -248,6 +305,12 @@ For class mods (recruit pins):
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.15.2 | 0.7.3 | 1.8.56 | SDK mods listed by the runtime even with ZC Unlocked's menu packs (the Z-6 class is back); pack options |
+| 0.15.1 | 0.7.3 | 1.8.54 | security update: manifests read as data, never run; bridge release build takes only the loader's commands; reproducible DLL (SHA-256 `dcd2171a…`); a fresh log every launch |
+| 0.15 | 0.7.2 | 1.8.53 | game build 201250; mod gameplay tags registered; mod status-effect visuals; SDK mods listed when ZC Unlocked refuses the build |
+| 0.14.1 | 0.6.0 | 1.8.34 | the real bridge 0.6.0 (v0.14 shipped an old dll) |
+| 0.14 | 0.6.0 (old dll) | 1.8.34 | game build 199049 |
+| 0.13 | 0.6.0 | 1.8.32 | Linux / Steam Deck (Proton): symbol tables, no dbghelp |
 | 0.12.2 | 0.5.3 | 1.8.32 | recruit pins: talents hold, stock recruits never taken over, no re-pin storm, recruited characters keep allowed choices; no console window at launch |
 | 0.12.1 | 0.5.3 | 1.8.30 | three signature files only (mod 9 keeps its own four): ZCUnlocked's "old UE4SS" popup fixed |
 | 0.12 | 0.5.3 | 1.8.29 | by-hand zip with one `ue4ss\` folder; the ROWFIX hub stutter fixed; 1.8.27/1.8.28's frame budget and class-mod runtime |
