@@ -1,15 +1,15 @@
 {
-  "version": "0.15.1",
+  "version": "0.15.2",
   "bridge": "0.7.3",
-  "loader": "1.8.54",
-  "asset": "ZCSDKRuntime_v0.15.1.zip",
-  "url": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.15.1/ZCSDKRuntime_v0.15.1.zip",
-  "published": "2026-11-12T09:51:56Z",
+  "loader": "1.8.56",
+  "asset": "ZCSDKRuntime_v0.15.2.zip",
+  "url": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.15.2/ZCSDKRuntime_v0.15.2.zip",
+  "published": "2026-11-23T05:59:49Z",
   "source": "Zero Company Mod SDK — tools/ue4ss-bridge + tools/ue4ss-loader (tools/publish-runtime.py)",
-  "sha256": "8b9117c68c5a43cfe5707e5e615b3fab7b56f0cd0ae5a11dd70ad41c42752d97",
-  "size": 387645,
-  "manualAsset": "ZCSDKRuntime_v0.15.1_manual.zip",
-  "manualUrl": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.15.1/ZCSDKRuntime_v0.15.1_manual.zip",
-  "manualSha256": "8539bbe1f00a3e980d504430a9015e6e86a66dfd4f216743a94362ab75bf365a",
-  "manualSize": 388299
+  "sha256": "f1d89c3544e6f91f86b3a83e5119804be8f07171eb0cb55b68c333441ae244dd",
+  "size": 394827,
+  "manualAsset": "ZCSDKRuntime_v0.15.2_manual.zip",
+  "manualUrl": "https://github.com/EnvianMods/ZCSDK-Runtime-Release/releases/download/v0.15.2/ZCSDKRuntime_v0.15.2_manual.zip",
+  "manualSha256": "ceedd84a36c427ba94ae8c6b28eb11b2e3698727becf8172f5c55407e9244602",
+  "manualSize": 395481
 }
