@@ -41,7 +41,7 @@ Go to Settings → **ZCSDK Runtime** → Install / Update. Mod Command installs 
 
 ### 2b. By hand: one extract
 
-Download **`ZCSDKRuntime_v0.15.2_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
+Download **`ZCSDKRuntime_v0.15.3_manual.zip`**. It is the one with `_manual` in its name. The other zip on the release is for Mod Command.
 
 Extract it into the **same `Win64` folder** as step 1:
 
@@ -109,13 +109,13 @@ cached), and a runtime release for the new build brings the table back.
 
 ### Updating from an older runtime
 
-After a game update, every older runtime's signature files stop matching and no Lua mod starts. Update to the newest runtime (Mod Command: Settings → ZCSDK Runtime → Update; by hand: extract `ZCSDKRuntime_v0.15.2_manual.zip` into `Win64\` and replace everything).
+After a game update, every older runtime's signature files stop matching and no Lua mod starts. Update to the newest runtime (Mod Command: Settings → ZCSDK Runtime → Update; by hand: extract `ZCSDKRuntime_v0.15.3_manual.zip` into `Win64\` and replace everything).
 
 **Coming from 0.10, 0.11 or 0.12** (extra steps):
 
 
 - **Mod Command:** Settings → ZCSDK Runtime → **Reinstall** (it installs the newest release; the button may not say Update, because the loader and bridge versions did not change). Mod Command removes the three signature files the old runtime placed and puts back the mod 9 copies it kept. If ZCUnlocked still reports an old UE4SS afterwards, reinstall UE4SS mod 9 as well.
-- **By hand:** extract `ZCSDKRuntime_v0.15.2_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
+- **By hand:** extract `ZCSDKRuntime_v0.15.3_manual.zip` into `Win64\` as above and replace everything. **Then reinstall UE4SS mod 9** (replace all files): 0.10–0.12 overwrote three of its files, and this runtime no longer carries them.
   - If you installed 0.11 by hand, check that it left no nested folder behind. `ue4ss\Mods\ZCSDKRuntime_v0.11\…` or `ue4ss\Mods\Mods\…` are leftovers; delete them.
   - Also delete any `ue4ss\Mods\UE4SS_Signatures\` folder. That was the wrong place in 0.10/0.11 by-hand installs.
   - Your content mods and their settings files are not touched.
@@ -141,8 +141,8 @@ After a game update, every older runtime's signature files stop matching and no 
 UE4SS - v3.0.1 Beta ...
 Starting C++ mod 'ZCSDKBridge'           (or: Mod 'ZCSDKBridge' has enabled.txt, starting mod.)
 Starting Lua mod 'ZCSDKLoader'
-[ZCSDKLoader] ZCSDKLoader v1.8.56 loaded (win64=...); waiting for the main-menu world
-[ZCSDKLoader] pump: running on the game thread (1.8.56; ...)
+[ZCSDKLoader] ZCSDKLoader v1.8.57 loaded (win64=...); waiting for the main-menu world
+[ZCSDKLoader] pump: running on the game thread (1.8.57; ...)
 [ZCSDKLoader] === ZCSDKLoader start ===
 [ZCSDKLoader] manifest: .../<YourMod>.zcsdk.lua  (<YourMod> v<x.y.z> ...)      (one line per SDK mod installed)
 [ZCSDKLoader] N manifest(s), M grant(s)
@@ -182,6 +182,18 @@ Neither ever repeats every few seconds, and there should be no `pump: task rowfi
 Please send **both** `ue4ss\UE4SS.log` and `ue4ss\ZCSDKLoader.log` with any report.
 
 ---
+
+## Changes: 0.15.2 → 0.15.3
+
+| | 0.15.2 (2026-11-22) | 0.15.3 |
+|---|---|---|
+| ZCSDKBridge | 0.7.3 | 0.7.3 (same DLL, SHA-256 `dcd2171a…`) |
+| ZCSDKLoader | 1.8.56 | **1.8.57** |
+
+- **Camera stutter in missions fixed.** On a unit with more than 4 class abilities, the runtime searched the whole game for the ability wheel about twice a second, which made the tactical camera stutter for the whole mission. It now looks once in a while and when the wheel opens or closes.
+- **Hub lag fixed.** The runtime's saber checks now run much less often in the Hub when nothing changes, and an Armory gear change no longer starts thirty seconds of quick re-checks.
+- **Ability wheel with more than 4 class abilities.** Every unit's wheel gets the extra class buttons (not only one unit's), the buttons are narrowed so they overlap much less (a thin overlap of the button frames remains; a follow-up fixes it), and class buttons past the fourth no longer show the 8 / 9 / 0 keys (those keys reach other buttons).
+- **If the wheel ever misbehaves:** set `Enabled = off` under `[Wheel]` in `ue4ss\Mods\ZCSDKLoader\settings.ini` and restart the game. You get the stock wheel (only the first 4 class abilities on it), and nothing else changes.
 
 ## Changes: 0.15.1 → 0.15.2
 
@@ -305,6 +317,7 @@ For class mods (recruit pins):
 
 | Runtime | ZCSDKBridge | ZCSDKLoader | Notes |
 |---|---|---|---|
+| 0.15.3 | 0.7.3 | 1.8.57 | mission camera stutter and Hub lag fixed; the ability wheel with more than 4 class abilities on every unit, much less button overlap |
 | 0.15.2 | 0.7.3 | 1.8.56 | SDK mods listed by the runtime even with ZC Unlocked's menu packs (the Z-6 class is back); pack options |
 | 0.15.1 | 0.7.3 | 1.8.54 | security update: manifests read as data, never run; bridge release build takes only the loader's commands; reproducible DLL (SHA-256 `dcd2171a…`); a fresh log every launch |
 | 0.15 | 0.7.2 | 1.8.53 | game build 201250; mod gameplay tags registered; mod status-effect visuals; SDK mods listed when ZC Unlocked refuses the build |
